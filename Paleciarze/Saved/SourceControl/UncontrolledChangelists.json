@@ -1,0 +1,14 @@
+{
+	"version": 1,
+	"changelists": [
+		{
+			"guid": "00000000000000000000000000000000",
+			"description": "Default Uncontrolled Changelist",
+			"files": [
+				"E:/Unity/paleciarze/Paleciarze/Content/StarterContent/HDRI/HDRI_Epic_Courtyard_Daylight.uasset",
+				"E:/Unity/paleciarze/Paleciarze/Content/TopDown/Blueprints/BPM_GlobalMacros.uasset",
+				"E:/Unity/paleciarze/Paleciarze/Content/TopDown/Blueprints/BP_TopDownController.uasset"
+			]
+		}
+	]
+}
