@@ -1467,3 +1467,64 @@ LogConfig: CVar [[LogNamedEventFilters:Frame *]] deferred - dummy variable creat
 [2024.05.29-14.00.22:449][311]LogAudioMixer: FMixerPlatformXAudio2::StopAudioStream() called. InstanceID=3
 [2024.05.29-14.00.22:456][311]LogUObjectHash: Compacting FUObjectHashTables data took   1.83ms
 [2024.05.29-14.00.22:769][312]LogPlayLevel: Display: Destroying online subsystem :Context_10
+[2024.05.29-14.01.02:581][759]LogUObjectHash: Compacting FUObjectHashTables data took   2.11ms
+[2024.05.29-14.01.05:090][759]LogSlate: Window 'Save Content' being destroyed
+[2024.05.29-14.01.05:137][759]LogFileHelpers: InternalPromptForCheckoutAndSave started...
+[2024.05.29-14.01.05:481][759]Cmd: OBJ SAVEPACKAGE PACKAGE="/Game/TopDown/Blueprints/BP_TopDownCharacter" FILE="E:/Unrealhub/paleciarze/Paleciarze/Content/TopDown/Blueprints/BP_TopDownCharacter.uasset" SILENT=true
+[2024.05.29-14.01.05:916][759]LogSavePackage: Moving output files for package: /Game/TopDown/Blueprints/BP_TopDownCharacter
+[2024.05.29-14.01.05:917][759]LogSavePackage: Moving 'E:/Unrealhub/paleciarze/Paleciarze/Saved/BP_TopDownCharacter1154BAC340F11B9E5A555187E485EE78.tmp' to 'E:/Unrealhub/paleciarze/Paleciarze/Content/TopDown/Blueprints/BP_TopDownCharacter.uasset'
+[2024.05.29-14.01.05:956][759]LogFileHelpers: InternalPromptForCheckoutAndSave took 818 ms (total: 1.32 sec)
+[2024.05.29-14.01.05:956][759]LogStall: Shutdown...
+[2024.05.29-14.01.05:961][759]LogStall: Shutdown complete.
+[2024.05.29-14.01.06:195][759]LogSlate: Window 'Paleciarze - Unreal Editor' being destroyed
+[2024.05.29-14.01.06:783][759]AssetCheck: New page: Asset Save: BP_TopDownCharacter
+[2024.05.29-14.01.06:784][759]LogContentValidation: Display: Validating /Script/Engine.Blueprint /Game/TopDown/Blueprints/BP_TopDownCharacter.BP_TopDownCharacter
+[2024.05.29-14.01.06:792][759]LogAutomationController: Ignoring very large delta of 4.58 seconds in calls to FAutomationControllerManager::Tick() and not penalizing unresponsive tests
+[2024.05.29-14.01.06:795][760]Cmd: QUIT_EDITOR
+[2024.05.29-14.01.06:795][760]LogCore: Engine exit requested (reason: UUnrealEdEngine::CloseEditor())
+[2024.05.29-14.01.07:311][760]LogCore: Engine exit requested (reason: EngineExit() was called; note: exit was already requested)
+[2024.05.29-14.01.07:323][760]LogStaticMesh: Abandoning remaining async distance field tasks for shutdown
+[2024.05.29-14.01.07:323][760]LogStaticMesh: Abandoning remaining async card representation tasks for shutdown
+[2024.05.29-14.01.07:409][760]LogWorld: UWorld::CleanupWorld for TopDownMap, bSessionEnded=true, bCleanupResources=true
+[2024.05.29-14.01.07:409][760]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2024.05.29-14.01.07:454][760]LogContentBundle: [TopDownMap(Standalone)] Deleting container.
+[2024.05.29-14.01.07:906][760]LogLevelSequenceEditor: LevelSequenceEditor subsystem deinitialized.
+[2024.05.29-14.01.09:470][760]LogAudio: Display: Beginning Audio Device Manager Shutdown (Module: AudioMixerXAudio2)...
+[2024.05.29-14.01.09:470][760]LogAudio: Display: Destroying 1 Remaining Audio Device(s)...
+[2024.05.29-14.01.09:470][760]LogAudio: Display: Audio Device unregistered from world 'TopDownMap'.
+[2024.05.29-14.01.09:470][760]LogAudioMixer: Deinitializing Audio Bus Subsystem for audio device with ID 1
+[2024.05.29-14.01.09:470][760]LogAudioMixer: FMixerPlatformXAudio2::StopAudioStream() called. InstanceID=1
+[2024.05.29-14.01.09:472][760]LogAudioMixer: FMixerPlatformXAudio2::StopAudioStream() called. InstanceID=1
+[2024.05.29-14.01.09:491][760]LogAudio: Display: Audio Device Manager Shutdown
+[2024.05.29-14.01.09:492][760]LogWindowsTextInputMethodSystem: Activated input method: Polski (Polska) - (Keyboard).
+[2024.05.29-14.01.09:556][760]LogSlate: Slate User Destroyed.  User Index 0, Is Virtual User: 0
+[2024.05.29-14.01.09:571][760]LogExit: Preparing to exit.
+[2024.05.29-14.01.10:044][760]LogUObjectHash: Compacting FUObjectHashTables data took   1.35ms
+[2024.05.29-14.01.10:050][760]LogPython: Display: Object '/Engine/PythonTypes.add_controls_for_selected_options' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:050][760]LogPython: Display: Object '/Engine/PythonTypes.add_controls_for_selected' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:050][760]LogPython: Display: Object '/Engine/PythonTypes.add_null_above_selected' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.align_translation_rotation' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.align_translation_all' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.align_translation_x' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.align_translation_y' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.align_translation_z' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.align_rotation' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.align_scale' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.search_replace_name_dialog' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.search_replace_entry' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.add_prefix_dialog' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.add_prefix_entry' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.add_suffix_dialog' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.add_suffix_entry' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.do_rename_dialog' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.do_rename_entry' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.set_bone_reference_pose' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.10:051][760]LogPython: Display: Object '/Engine/PythonTypes.ControlOutputFormat' was externally referenced when shutting down Python. Forcibly releasing its Python resources!
+[2024.05.29-14.01.12:962][760]LogWorld: UWorld::CleanupWorld for World_7, bSessionEnded=true, bCleanupResources=true
+[2024.05.29-14.01.12:966][760]LogWorld: UWorld::CleanupWorld for World_0, bSessionEnded=true, bCleanupResources=true
+[2024.05.29-14.01.12:970][760]LogWorld: UWorld::CleanupWorld for World_1, bSessionEnded=true, bCleanupResources=true
+[2024.05.29-14.01.12:974][760]LogWorld: UWorld::CleanupWorld for World_4, bSessionEnded=true, bCleanupResources=true
+[2024.05.29-14.01.12:982][760]LogWorld: UWorld::CleanupWorld for World_5, bSessionEnded=true, bCleanupResources=true
+[2024.05.29-14.01.13:582][760]LogDemo: Cleaned up 0 splitscreen connections, owner deletion: enabled
+[2024.05.29-14.01.14:609][760]LogExit: Editor shut down
+[2024.05.29-14.01.14:653][760]LogExit: Transaction tracking system shut down
