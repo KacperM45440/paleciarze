@@ -1,5 +1,4 @@
 // :P
-
 #include "Paleciarze.h"
 #include "Modules/ModuleManager.h"
 

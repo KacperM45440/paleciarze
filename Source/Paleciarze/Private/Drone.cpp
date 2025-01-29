@@ -1,5 +1,3 @@
-// :P
-
 #include "Drone.h"
 #include "Runtime/Engine/Classes/Engine/World.h"
 #include "Runtime/AIModule/Classes/AIController.h"
@@ -11,61 +9,88 @@
 #include <Kismet/GameplayStatics.h>
 
 AAIController* AIController;
+ACharacter* AICharacter;
 AActor* PlayerRef;
 UCharacterMovementComponent* MovementRef;
-
-// Sets default values
-ADrone::ADrone()
-{
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-}
 
 // Called when the game starts or when spawned
 void ADrone::BeginPlay()
 {
-	Super::BeginPlay();
-	
-    PlayerRef = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    AIController = Cast<AAIController>(GetComponentByClass(AAIController::StaticClass()));
+    Super::BeginPlay();
 
-    if (PlayerRef)
+    PlayerRef = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+
+    // Find the AI controller that controls this actor
+    AIController = Cast<AAIController>(UGameplayStatics::GetActorOfClass(GetWorld(), AAIController::StaticClass()));
+    if (!AIController)
     {
-        MovementRef = PlayerRef->FindComponentByClass<UCharacterMovementComponent>();
+        UE_LOG(LogTemp, Error, TEXT("AIController not found! Ensure an AIController exists in the level."));
+        return;
     }
+
+    // Find the closest AI Pawn to associate with the AIController
+    TArray<AActor*> FoundPawns;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APawn::StaticClass(), FoundPawns);
+
+    for (AActor* Actor : FoundPawns)
+    {
+        APawn* PotentialPawn = Cast<APawn>(Actor);
+        if (PotentialPawn && AIController->GetPawn() == PotentialPawn)
+        {
+            AICharacter = Cast<ACharacter>(PotentialPawn);
+            break;
+        }
+    }
+
+    if (!AICharacter)
+    {
+        UE_LOG(LogTemp, Error, TEXT("AICharacter not found! Make sure the AIController is possessing a Character."));
+        return;
+    }
+
+    // Get the movement component from the AICharacter
+    MovementRef = AICharacter->GetCharacterMovement();
 }
 
 void ADrone::Seek(const FVector& TargetLocation)
 {
-    if (AIController)
-    {
-        AIController->MoveToLocation(TargetLocation);
-    }
+    if (!AIController) return;
+
+    AIController->MoveToLocation(TargetLocation);
+    UE_LOG(LogTemp, Warning, TEXT("SEEK"));
 }
 
 void ADrone::Pursue()
 {
-    if (!PlayerRef || !MovementRef) return;
+    if (!PlayerRef || !MovementRef || !AICharacter) return;
 
     FVector TargetDirection = PlayerRef->GetActorLocation() - GetActorLocation();
     float FwdAngle = UKismetMathLibrary::Acos(FVector::DotProduct(GetActorForwardVector(), PlayerRef->GetActorForwardVector())) * (180.f / PI);
     float DirAngle = UKismetMathLibrary::Acos(FVector::DotProduct(GetActorForwardVector(), TargetDirection.GetSafeNormal())) * (180.f / PI);
 
-    if ((DirAngle > 90.f && FwdAngle < 20.f) || (MovementRef->Velocity.X < 0.01f && MovementRef->Velocity.Z < 0.01f))
+    UE_LOG(LogTemp, Warning, TEXT("PURSUE 1"));
+
+    float PlayerSpeed = MovementRef->Velocity.Size();
+    float AISpeed = AICharacter->GetCharacterMovement()->Velocity.Size();
+
+    if ((DirAngle > 90.f && FwdAngle < 20.f) || PlayerSpeed < 0.01f)
     {
         Seek(PlayerRef->GetActorLocation());
         return;
     }
 
-    //float PredictedLocation = TargetDirection.Size() / (AIController->GetMovementSpeed() + MovementRef->Velocity); // <-- To trzeba naprawic zeby dzialalo, dolna linijka jest jako placeholder
-    float PredictedLocation = TargetDirection.Size() / MovementRef->Velocity.X;
+    UE_LOG(LogTemp, Warning, TEXT("PURSUE 2"));
+
+    float PredictedLocation = TargetDirection.Size() / (AISpeed + PlayerSpeed);
     Seek(PlayerRef->GetActorLocation() + PlayerRef->GetActorForwardVector() * PredictedLocation);
+
+    UE_LOG(LogTemp, Warning, TEXT("PURSUING %f"), PredictedLocation);
 }
 
 // Called every frame
 void ADrone::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
+    Super::Tick(DeltaTime);
+
     Pursue();
 }
-
