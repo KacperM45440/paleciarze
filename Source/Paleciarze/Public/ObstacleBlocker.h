@@ -16,10 +16,6 @@ protected:
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaTime) override;
 
-public:
-    UFUNCTION(BlueprintCallable, Category = "Blocker")
-    void SetNewMesh(UStaticMesh* NewMesh); // Umo¿liwia zmianê mesha w kodzie / Blueprintach
-
 private:
     UPROPERTY(VisibleAnywhere, Category = "Blocker")
     class UBoxComponent* BlockerCollision;
@@ -27,17 +23,13 @@ private:
     UPROPERTY(VisibleAnywhere, Category = "Blocker")
     class UStaticMeshComponent* BlockerMesh;
 
+    //  Referencja do gracza
+    AActor* Player;
+
+    //  Wspó³czynnik prêdkoœci pod¹¿ania (mniejsza prêdkoœæ ni¿ gracz)
+    UPROPERTY(EditAnywhere, Category = "Movement", meta = (ClampMin = "0.1", ClampMax = "1.0"))
+    float FollowSpeedMultiplier = 0.5f; // 50% prêdkoœci gracza
+
     FVector StartLocation;
-    FVector TargetLocation;
-
-    UPROPERTY(EditAnywhere, Category = "Movement")
-    float MoveDistance = 500.0f;
-
-    UPROPERTY(EditAnywhere, Category = "Movement")
-    float MoveSpeed = 1.5f;
-
     float ElapsedTime;
-
-    void UpdateMaterialScale();
-    void UpdateCollisionSize(); // NOWA METODA do automatycznego skalowania kolizji
 };
