@@ -23,12 +23,10 @@ private:
     UPROPERTY(VisibleAnywhere, Category = "Blocker")
     class UStaticMeshComponent* BlockerMesh;
 
-    //  Referencja do gracza
     AActor* Player;
 
-    //  Wspó³czynnik prêdkoœci pod¹¿ania (mniejsza prêdkoœæ ni¿ gracz)
     UPROPERTY(EditAnywhere, Category = "Movement", meta = (ClampMin = "0.1", ClampMax = "1.0"))
-    float FollowSpeedMultiplier = 0.5f; // 50% prêdkoœci gracza
+    float FollowSpeedMultiplier = 0.5f;
 
     FVector StartLocation;
     float ElapsedTime;

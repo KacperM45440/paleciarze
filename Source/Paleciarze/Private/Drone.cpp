@@ -1,26 +1,29 @@
 #include "Drone.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "NavigationSystem.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Runtime/Engine/Classes/Engine/World.h"
 #include "Runtime/AIModule/Classes/AIController.h"
-#include "NavigationSystem.h"
-#include "GameFramework/Actor.h"
-#include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Kismet/KismetMathLibrary.h"
-#include <Kismet/GameplayStatics.h>
 
 AAIController* AIController;
 ACharacter* AICharacter;
 AActor* PlayerRef;
 UCharacterMovementComponent* MovementRef;
 
-// Called when the game starts or when spawned
+ADrone::ADrone()
+{
+    PrimaryActorTick.bCanEverTick = true;
+    AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+    AudioComponent->bAutoActivate = false;
+}
+
 void ADrone::BeginPlay()
 {
     Super::BeginPlay();
 
     PlayerRef = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 
-    // Find the AI controller that controls this actor
     AIController = Cast<AAIController>(UGameplayStatics::GetActorOfClass(GetWorld(), AAIController::StaticClass()));
     if (!AIController)
     {
@@ -28,7 +31,6 @@ void ADrone::BeginPlay()
         return;
     }
 
-    // Find the closest AI Pawn to associate with the AIController
     TArray<AActor*> FoundPawns;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), APawn::StaticClass(), FoundPawns);
 
@@ -48,16 +50,26 @@ void ADrone::BeginPlay()
         return;
     }
 
-    // Get the movement component from the AICharacter
     MovementRef = AICharacter->GetCharacterMovement();
+
+    if (BackgroundMusic && AudioComponent)
+    {
+        AudioComponent->SetSound(BackgroundMusic);
+        AudioComponent->Play();
+    }
+}
+
+void ADrone::TeleportDrone()
+{
+    FVector NewLocation(180.f, 0.f, 310.f);
+    SetActorLocation(NewLocation, false, nullptr, ETeleportType::TeleportPhysics);
+    bIsTeleporting = false;
 }
 
 void ADrone::Seek(const FVector& TargetLocation)
 {
     if (!AIController) return;
-
     AIController->MoveToLocation(TargetLocation);
-    UE_LOG(LogTemp, Warning, TEXT("SEEK"));
 }
 
 void ADrone::Pursue()
@@ -67,9 +79,6 @@ void ADrone::Pursue()
     FVector TargetDirection = PlayerRef->GetActorLocation() - GetActorLocation();
     float FwdAngle = UKismetMathLibrary::Acos(FVector::DotProduct(GetActorForwardVector(), PlayerRef->GetActorForwardVector())) * (180.f / PI);
     float DirAngle = UKismetMathLibrary::Acos(FVector::DotProduct(GetActorForwardVector(), TargetDirection.GetSafeNormal())) * (180.f / PI);
-
-    UE_LOG(LogTemp, Warning, TEXT("PURSUE 1"));
-
     float PlayerSpeed = MovementRef->Velocity.Size();
     float AISpeed = AICharacter->GetCharacterMovement()->Velocity.Size();
 
@@ -79,18 +88,28 @@ void ADrone::Pursue()
         return;
     }
 
-    UE_LOG(LogTemp, Warning, TEXT("PURSUE 2"));
-
     float PredictedLocation = TargetDirection.Size() / (AISpeed + PlayerSpeed);
     Seek(PlayerRef->GetActorLocation() + PlayerRef->GetActorForwardVector() * PredictedLocation);
-
-    UE_LOG(LogTemp, Warning, TEXT("PURSUING %f"), PredictedLocation);
 }
 
-// Called every frame
 void ADrone::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    Pursue();
+    if (!PlayerRef) return;
+
+    float DistanceToPlayer = FVector::Dist(GetActorLocation(), PlayerRef->GetActorLocation());
+
+    if (DistanceToPlayer < 150.0f && !bIsTeleporting)
+    {
+        UFunction* DeathFunction = PlayerRef->FindFunction(FName("Death"));
+        PlayerRef->ProcessEvent(DeathFunction, nullptr);
+        bIsTeleporting = true;
+        GetWorld()->GetTimerManager().SetTimer(TeleportTimerHandle, this, &ADrone::TeleportDrone, 1.0f, false);
+    }
+    else if (DistanceToPlayer >= 150.0f)
+    {
+        bIsTeleporting = false;
+        Pursue();
+    }
 }
