@@ -1,26 +1,28 @@
 #include "Drone.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "NavigationSystem.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Runtime/Engine/Classes/Engine/World.h"
 #include "Runtime/AIModule/Classes/AIController.h"
-#include "NavigationSystem.h"
-#include "GameFramework/Actor.h"
-#include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Kismet/KismetMathLibrary.h"
-#include <Kismet/GameplayStatics.h>
 
 AAIController* AIController;
 ACharacter* AICharacter;
 AActor* PlayerRef;
 UCharacterMovementComponent* MovementRef;
+// Konstruktor
+ADrone::ADrone()
+{
+    PrimaryActorTick.bCanEverTick = true; // W³¹cza Tick()
+}
 
-// Called when the game starts or when spawned
+// Funkcja wywo³ywana po rozpoczêciu gry
 void ADrone::BeginPlay()
 {
     Super::BeginPlay();
 
     PlayerRef = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 
-    // Find the AI controller that controls this actor
     AIController = Cast<AAIController>(UGameplayStatics::GetActorOfClass(GetWorld(), AAIController::StaticClass()));
     if (!AIController)
     {
@@ -28,7 +30,7 @@ void ADrone::BeginPlay()
         return;
     }
 
-    // Find the closest AI Pawn to associate with the AIController
+    // Znalezienie najbli¿szego AI Pawna do powi¹zania z kontrolerem
     TArray<AActor*> FoundPawns;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), APawn::StaticClass(), FoundPawns);
 
@@ -48,10 +50,21 @@ void ADrone::BeginPlay()
         return;
     }
 
-    // Get the movement component from the AICharacter
+    // Pobranie komponentu ruchu AI
     MovementRef = AICharacter->GetCharacterMovement();
 }
 
+// Funkcja teleportuj¹ca drona
+void ADrone::TeleportDrone()
+{
+    FVector NewLocation(180.f, 0.f, 180.f);
+    SetActorLocation(NewLocation, false, nullptr, ETeleportType::TeleportPhysics);
+    UE_LOG(LogTemp, Warning, TEXT("Drone teleported to 180,0,180"));
+
+    bIsTeleporting = false; // Reset flagi po teleportacji
+}
+
+// Funkcja œledzenia celu
 void ADrone::Seek(const FVector& TargetLocation)
 {
     if (!AIController) return;
@@ -60,6 +73,7 @@ void ADrone::Seek(const FVector& TargetLocation)
     UE_LOG(LogTemp, Warning, TEXT("SEEK"));
 }
 
+// Funkcja œcigania gracza
 void ADrone::Pursue()
 {
     if (!PlayerRef || !MovementRef || !AICharacter) return;
@@ -87,10 +101,27 @@ void ADrone::Pursue()
     UE_LOG(LogTemp, Warning, TEXT("PURSUING %f"), PredictedLocation);
 }
 
-// Called every frame
+// Funkcja wywo³ywana co klatkê
 void ADrone::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    Pursue();
+    if (!PlayerRef) return;
+
+    float DistanceToPlayer = FVector::Dist(GetActorLocation(), PlayerRef->GetActorLocation());
+    UE_LOG(LogTemp, Warning, TEXT("Distance to player: %f"), DistanceToPlayer);
+
+    if (DistanceToPlayer < 145.0f && !bIsTeleporting)
+    {
+        UFunction* DeathFunction = PlayerRef->FindFunction(FName("Death"));
+        PlayerRef->ProcessEvent(DeathFunction, nullptr);
+        bIsTeleporting = true;
+        UE_LOG(LogTemp, Warning, TEXT("Teleport in 1 second..."));
+        GetWorld()->GetTimerManager().SetTimer(TeleportTimerHandle, this, &ADrone::TeleportDrone, 1.0f, false);
+    }
+    else if (DistanceToPlayer >= 145.0f)
+    {
+        bIsTeleporting = false;
+        Pursue();
+    }
 }
