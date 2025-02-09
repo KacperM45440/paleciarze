@@ -14,6 +14,8 @@ UCharacterMovementComponent* MovementRef;
 ADrone::ADrone()
 {
     PrimaryActorTick.bCanEverTick = true; // W³¹cza Tick()
+    AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+    AudioComponent->bAutoActivate = false;
 }
 
 // Funkcja wywo³ywana po rozpoczêciu gry
@@ -52,6 +54,13 @@ void ADrone::BeginPlay()
 
     // Pobranie komponentu ruchu AI
     MovementRef = AICharacter->GetCharacterMovement();
+
+    // Odtwarzanie muzyki w tle
+    if (BackgroundMusic && AudioComponent)
+    {
+        AudioComponent->SetSound(BackgroundMusic);
+        AudioComponent->Play();
+    }
 }
 
 // Funkcja teleportuj¹ca drona
@@ -60,6 +69,11 @@ void ADrone::TeleportDrone()
     FVector NewLocation(180.f, 0.f, 310.f);
     SetActorLocation(NewLocation, false, nullptr, ETeleportType::TeleportPhysics);
     UE_LOG(LogTemp, Warning, TEXT("Drone teleported to 180,0,310"));
+
+    if (TeleportSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, TeleportSound, GetActorLocation());
+    }
 
     bIsTeleporting = false; // Reset flagi po teleportacji
 }
@@ -111,7 +125,7 @@ void ADrone::Tick(float DeltaTime)
     float DistanceToPlayer = FVector::Dist(GetActorLocation(), PlayerRef->GetActorLocation());
     UE_LOG(LogTemp, Warning, TEXT("Distance to player: %f"), DistanceToPlayer);
 
-    if (DistanceToPlayer < 145.0f && !bIsTeleporting)
+    if (DistanceToPlayer < 115.0f && !bIsTeleporting)
     {
         UFunction* DeathFunction = PlayerRef->FindFunction(FName("Death"));
         PlayerRef->ProcessEvent(DeathFunction, nullptr);
@@ -119,7 +133,7 @@ void ADrone::Tick(float DeltaTime)
         UE_LOG(LogTemp, Warning, TEXT("Teleport in 1 second..."));
         GetWorld()->GetTimerManager().SetTimer(TeleportTimerHandle, this, &ADrone::TeleportDrone, 1.0f, false);
     }
-    else if (DistanceToPlayer >= 145.0f)
+    else if (DistanceToPlayer >= 115.0f)
     {
         bIsTeleporting = false;
         Pursue();
