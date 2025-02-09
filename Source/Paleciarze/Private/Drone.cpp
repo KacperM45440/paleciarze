@@ -57,9 +57,9 @@ void ADrone::BeginPlay()
 // Funkcja teleportuj¹ca drona
 void ADrone::TeleportDrone()
 {
-    FVector NewLocation(180.f, 0.f, 180.f);
+    FVector NewLocation(180.f, 0.f, 310.f);
     SetActorLocation(NewLocation, false, nullptr, ETeleportType::TeleportPhysics);
-    UE_LOG(LogTemp, Warning, TEXT("Drone teleported to 180,0,180"));
+    UE_LOG(LogTemp, Warning, TEXT("Drone teleported to 180,0,310"));
 
     bIsTeleporting = false; // Reset flagi po teleportacji
 }
