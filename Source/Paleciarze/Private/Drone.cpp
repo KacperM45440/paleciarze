@@ -10,15 +10,14 @@ AAIController* AIController;
 ACharacter* AICharacter;
 AActor* PlayerRef;
 UCharacterMovementComponent* MovementRef;
-// Konstruktor
+
 ADrone::ADrone()
 {
-    PrimaryActorTick.bCanEverTick = true; // W³¹cza Tick()
+    PrimaryActorTick.bCanEverTick = true;
     AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
     AudioComponent->bAutoActivate = false;
 }
 
-// Funkcja wywo³ywana po rozpoczêciu gry
 void ADrone::BeginPlay()
 {
     Super::BeginPlay();
@@ -32,7 +31,6 @@ void ADrone::BeginPlay()
         return;
     }
 
-    // Znalezienie najbli¿szego AI Pawna do powi¹zania z kontrolerem
     TArray<AActor*> FoundPawns;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), APawn::StaticClass(), FoundPawns);
 
@@ -52,10 +50,8 @@ void ADrone::BeginPlay()
         return;
     }
 
-    // Pobranie komponentu ruchu AI
     MovementRef = AICharacter->GetCharacterMovement();
 
-    // Odtwarzanie muzyki w tle
     if (BackgroundMusic && AudioComponent)
     {
         AudioComponent->SetSound(BackgroundMusic);
@@ -63,31 +59,19 @@ void ADrone::BeginPlay()
     }
 }
 
-// Funkcja teleportuj¹ca drona
 void ADrone::TeleportDrone()
 {
     FVector NewLocation(180.f, 0.f, 310.f);
     SetActorLocation(NewLocation, false, nullptr, ETeleportType::TeleportPhysics);
-    UE_LOG(LogTemp, Warning, TEXT("Drone teleported to 180,0,310"));
-
-    if (TeleportSound)
-    {
-        UGameplayStatics::PlaySoundAtLocation(this, TeleportSound, GetActorLocation());
-    }
-
-    bIsTeleporting = false; // Reset flagi po teleportacji
+    bIsTeleporting = false;
 }
 
-// Funkcja œledzenia celu
 void ADrone::Seek(const FVector& TargetLocation)
 {
     if (!AIController) return;
-
     AIController->MoveToLocation(TargetLocation);
-    UE_LOG(LogTemp, Warning, TEXT("SEEK"));
 }
 
-// Funkcja œcigania gracza
 void ADrone::Pursue()
 {
     if (!PlayerRef || !MovementRef || !AICharacter) return;
@@ -95,9 +79,6 @@ void ADrone::Pursue()
     FVector TargetDirection = PlayerRef->GetActorLocation() - GetActorLocation();
     float FwdAngle = UKismetMathLibrary::Acos(FVector::DotProduct(GetActorForwardVector(), PlayerRef->GetActorForwardVector())) * (180.f / PI);
     float DirAngle = UKismetMathLibrary::Acos(FVector::DotProduct(GetActorForwardVector(), TargetDirection.GetSafeNormal())) * (180.f / PI);
-
-    UE_LOG(LogTemp, Warning, TEXT("PURSUE 1"));
-
     float PlayerSpeed = MovementRef->Velocity.Size();
     float AISpeed = AICharacter->GetCharacterMovement()->Velocity.Size();
 
@@ -107,15 +88,10 @@ void ADrone::Pursue()
         return;
     }
 
-    UE_LOG(LogTemp, Warning, TEXT("PURSUE 2"));
-
     float PredictedLocation = TargetDirection.Size() / (AISpeed + PlayerSpeed);
     Seek(PlayerRef->GetActorLocation() + PlayerRef->GetActorForwardVector() * PredictedLocation);
-
-    UE_LOG(LogTemp, Warning, TEXT("PURSUING %f"), PredictedLocation);
 }
 
-// Funkcja wywo³ywana co klatkê
 void ADrone::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
@@ -123,17 +99,15 @@ void ADrone::Tick(float DeltaTime)
     if (!PlayerRef) return;
 
     float DistanceToPlayer = FVector::Dist(GetActorLocation(), PlayerRef->GetActorLocation());
-    UE_LOG(LogTemp, Warning, TEXT("Distance to player: %f"), DistanceToPlayer);
 
-    if (DistanceToPlayer < 115.0f && !bIsTeleporting)
+    if (DistanceToPlayer < 150.0f && !bIsTeleporting)
     {
         UFunction* DeathFunction = PlayerRef->FindFunction(FName("Death"));
         PlayerRef->ProcessEvent(DeathFunction, nullptr);
         bIsTeleporting = true;
-        UE_LOG(LogTemp, Warning, TEXT("Teleport in 1 second..."));
         GetWorld()->GetTimerManager().SetTimer(TeleportTimerHandle, this, &ADrone::TeleportDrone, 1.0f, false);
     }
-    else if (DistanceToPlayer >= 115.0f)
+    else if (DistanceToPlayer >= 150.0f)
     {
         bIsTeleporting = false;
         Pursue();

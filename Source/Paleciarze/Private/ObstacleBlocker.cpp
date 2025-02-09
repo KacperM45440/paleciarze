@@ -29,7 +29,6 @@ void AObstacleBlocker::BeginPlay()
 {
     Super::BeginPlay();
 
-    //  Znajdź gracza w świecie gry
     Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 
     StartLocation = GetActorLocation();
@@ -44,7 +43,6 @@ void AObstacleBlocker::Tick(float DeltaTime)
         FVector PlayerLocation = Player->GetActorLocation();
         FVector BlockerLocation = GetActorLocation();
 
-        //  Blocker teraz może być szybszy od gracza
         float NewY = FMath::Lerp(BlockerLocation.Y, PlayerLocation.Y, FollowSpeedMultiplier * DeltaTime);
         SetActorLocation(FVector(BlockerLocation.X, NewY, BlockerLocation.Z));
     }

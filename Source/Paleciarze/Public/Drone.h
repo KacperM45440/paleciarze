@@ -17,14 +17,11 @@ public:
 protected:
     virtual void BeginPlay() override;
 
-    // Timer do teleportacji
     FTimerHandle TeleportTimerHandle;
     bool bIsTeleporting = false;
 
-    // Funkcja do teleportowania drona
     void TeleportDrone();
 
-    // Komponent dŸwiêkowy
     UPROPERTY(EditAnywhere, Category = "Audio")
     USoundBase* BackgroundMusic;
 
